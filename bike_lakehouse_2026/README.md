@@ -1,14 +1,186 @@
-## Bronze Layer
+# Bike Lakehouse 2026
 
-The bronze layer now has two ingestion approaches:
-
-1. **bronze.ipynb** - Manual approach where each CSV file is loaded individually with separate code blocks
-2. **bronze(improved).ipynb** - Configuration-driven approach using INGESTION_CONFIG list and a loop to process all files dynamically
+A Databricks Lakehouse project implementing the **Medallion Architecture** for bike data processing and analytics with automated pipeline orchestration.
 
 ## Project Structure
 
-The following notebooks are available:
-- bronze.ipynb
-- bronze(improved).ipynb
+```
+bike_lakehouse_2026/
+├── bronze/                     # Raw data ingestion layer
+│   ├── bronze.ipynb           # Bronze layer data loading (manual approach)
+│   └── bronze(improved).ipynb # Bronze layer data loading (configuration-driven approach)
+├── silver/                     # Cleaned and transformed data layer
+│   ├── silver_orchestration.ipynb  # Silver layer orchestration notebook
+│   ├── crm/                   # CRM system transformations
+│   └── erp/                   # ERP system transformations
+├── gold/                       # Aggregated business-level data layer
+│   ├── gold_orchestration.ipynb    # Gold layer orchestration notebook
+│   ├── gold_dim_customers.ipynb    # Customer dimension table
+│   ├── gold_dim_products.ipynb     # Product dimension table
+│   └── gold_fact_sales.ipynb       # Sales fact table
+├── init_lakehouse.ipynb       # Initialization notebook for lakehouse setup
+├── pipeline.json              # Databricks job configuration (JSON format)
+├── pipeline.yaml              # Databricks job configuration (YAML format)
+├── pipeline.py                # Databricks job configuration (Python SDK)
+└── README.md
+```
 
-Existing content follows...
+## Architecture Overview
+
+This project follows the **Medallion Architecture** pattern with automated orchestration:
+
+### 🥉 Bronze Layer
+- Raw data ingestion from source systems (CRM and ERP)
+- Data stored in its original format with minimal transformations
+- Loads customer information, product details, and sales data from CSV files
+- Serves as the single source of truth for raw data
+
+#### Bronze Layer Ingestion Options
+
+The project provides **two approaches** for data ingestion into the Bronze layer:
+
+**Option 1: Manual Approach (`bronze.ipynb`)**
+- Individual code blocks for each CSV file
+- Explicit file-by-file loading with separate write operations
+- Best for: Learning, debugging, or when you need fine-grained control over each ingestion
+- Example structure:
+  ```python
+  # Load cust_info.csv
+  df = spark.read.option("header", "true").csv("path/to/file.csv")
+  df.write.mode("overwrite").saveAsTable("workspace.bronze.table_name")
+  ```
+
+**Option 2: Configuration-Driven Approach (`bronze(improved).ipynb`)** ✨ *Recommended*
+- Uses a centralized `INGESTION_CONFIG` list to define all source files
+- Iterates through configuration with a loop for dynamic processing
+- Best for: Production use, maintainability, and scalability
+- Benefits:
+  - Single source of configuration for all ingestion rules
+  - Easy to add new files by updating the config list
+  - Consistent error handling across all files
+  - Less code duplication
+- Example structure:
+  ```python
+  INGESTION_CONFIG = [
+      {"source": "crm", "path": "/path/to/file.csv", "table": "table_name"},
+      ...
+  ]
+  for item in INGESTION_CONFIG:
+      df = spark.read.option("header", "true").csv(item["path"])
+      df.write.mode("overwrite").saveAsTable(f"workspace.bronze.{item['table']}")
+  ```
+
+### 🥈 Silver Layer
+- Cleaned and validated data from multiple source systems
+- **CRM Tables**: Customer info, product info, and sales details
+- **ERP Tables**: Customer data, location, and product category information
+- Data quality checks, deduplication, and standardization applied
+- Orchestrated execution through `silver_orchestration.ipynb`
+
+### 🥇 Gold Layer
+- Business-level dimensional modeling with star schema design
+- **Dimension Tables**:
+  - `dim_customers`: Unified customer master data
+  - `dim_products`: Product catalog with category hierarchy
+- **Fact Tables**:
+  - `fact_sales`: Sales transactions with foreign keys to dimensions
+- Optimized for reporting, dashboards, and business intelligence
+- Orchestrated execution through `gold_orchestration.ipynb`
+
+## Pipeline Orchestration
+
+The project includes automated Databricks job configurations in multiple formats:
+
+### Pipeline Configuration Files
+- **`pipeline.json`**: Native Databricks job definition
+- **`pipeline.yaml`**: YAML format for easier version control and readability
+- **`pipeline.py`**: Python SDK implementation for programmatic job management
+
+### Pipeline Workflow
+1. **Bronze Layer Task**: Ingests raw data from source files (uses `bronze.ipynb` by default)
+2. **Silver Layer Task**: Executes after bronze completion, runs all silver transformations
+3. **Gold Layer Task**: Executes after silver completion, builds dimensional model
+
+> **Note**: To use the improved bronze ingestion approach in your pipeline, update the notebook path in `pipeline.json`, `pipeline.yaml`, or `pipeline.py` to point to `bronze(improved).ipynb` instead of `bronze.ipynb`.
+
+### Pipeline Features
+- **Scheduled Execution**: Runs daily (configurable interval)
+- **Sequential Dependencies**: Each layer waits for the previous to complete
+- **Performance Optimized**: Configured for optimal resource utilization
+- **Queue Enabled**: Supports concurrent run queuing
+
+## Getting Started
+
+### Prerequisites
+- Databricks workspace access
+- Datasets included in repository volumes
+- Appropriate permissions to create databases, tables, and jobs
+- Databricks SDK 0.70.0 or higher (for Python pipeline deployment)
+
+### Setup
+1. Clone this repository to your Databricks workspace
+2. Run `init_lakehouse.ipynb` to initialize the lakehouse infrastructure (databases, schemas, volumes)
+3. Deploy the pipeline using one of the configuration files:
+   - **Option A**: Import `pipeline.json` directly in Databricks Workflows UI
+   - **Option B**: Deploy using Databricks Asset Bundles with `pipeline.yaml`
+   - **Option C**: Run `pipeline.py` to create/update the job programmatically
+
+### Manual Execution
+If you prefer to run notebooks manually:
+1. **Initialize**: Run `init_lakehouse.ipynb`
+2. **Bronze**: Execute `bronze/bronze.ipynb` OR `bronze/bronze(improved).ipynb` (recommended)
+3. **Silver**: Run `silver/silver_orchestration.ipynb`
+4. **Gold**: Execute `gold/gold_orchestration.ipynb`
+
+## Pipeline Deployment
+
+### Using Python SDK
+```python
+# Install the Databricks SDK
+%pip install --upgrade databricks-sdk==0.70.0
+
+# Run the pipeline.py script to create or update the job
+# Update the job_id in pipeline.py or use w.jobs.create() for new jobs
+```
+
+### Using Databricks CLI with YAML
+```bash
+# Deploy using Databricks Asset Bundles
+databricks bundle deploy -t production
+```
+
+### Using Workflows UI
+1. Navigate to Databricks Workflows
+2. Click "Create Job"
+3. Import the `pipeline.json` configuration
+4. Adjust notebook paths to match your workspace location
+5. Optionally switch to `bronze(improved).ipynb` for the bronze task
+
+## Data Flow
+
+```
+Source Systems (CSV) → Bronze Layer → Silver Layer → Gold Layer
+                           ↓              ↓              ↓
+                      Raw Tables    Cleansed Tables  Star Schema
+                                                     (Dims & Facts)
+```
+
+## Contributing
+
+1. Create a feature branch from `main`
+2. Make your changes following the existing Medallion Architecture patterns
+3. Test your notebooks in a development environment
+4. Update pipeline configurations if adding new notebooks
+5. Submit a pull request for review
+
+## Notes
+
+- Orchestration notebooks (`silver_orchestration.ipynb` and `gold_orchestration.ipynb`) use `dbutils.notebook.run()` to execute transformation notebooks in sequence
+- The pipeline is configured to pause if any task fails (using `run_if: ALL_SUCCESS`)
+- Performance target is set to `PERFORMANCE_OPTIMIZED` for faster execution
+- Adjust notebook paths in pipeline configurations to match your workspace structure
+- For production deployments, use `bronze(improved).ipynb` for more maintainable code
+
+## License
+
+This project is part of the [Databricks Bootcamp 2026](https://github.com/DataWithBaraa/databricks_bootcamp_2026) by https://www.datawithbaraa.com/
