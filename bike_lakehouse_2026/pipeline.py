@@ -19,7 +19,7 @@ bike_lakehouse_2026 = Job.from_dict(
             {
                 "task_key": "bronze_layer",
                 "notebook_task": {
-                    "notebook_path": "/Workspace/Users/vladimirvukojicic@gmail.com/databricks_bootcamp_2026_de/bike_lakehouse_2026/bronze/bronze",
+                    "notebook_path": "/Workspace/Users/vladimirvukojicic@gmail.com/databricks_bootcamp_2026/bike_lakehouse_2026/bronze/bronze(improved)",
                     "source": "WORKSPACE",
                 },
             },
@@ -31,7 +31,7 @@ bike_lakehouse_2026 = Job.from_dict(
                     },
                 ],
                 "notebook_task": {
-                    "notebook_path": "/Workspace/Users/vladimirvukojicic@gmail.com/databricks_bootcamp_2026_de/bike_lakehouse_2026/silver/silver_orchestration",
+                    "notebook_path": "/Workspace/Users/vladimirvukojicic@gmail.com/databricks_bootcamp_2026/bike_lakehouse_2026/silver/silver_orchestration",
                     "source": "WORKSPACE",
                 },
             },
@@ -43,7 +43,7 @@ bike_lakehouse_2026 = Job.from_dict(
                     },
                 ],
                 "notebook_task": {
-                    "notebook_path": "/Workspace/Users/vladimirvukojicic@gmail.com/databricks_bootcamp_2026_de/bike_lakehouse_2026/gold/gold_orchestration",
+                    "notebook_path": "/Workspace/Users/vladimirvukojicic@gmail.com/databricks_bootcamp_2026/bike_lakehouse_2026/gold/gold_orchestration",
                     "source": "WORKSPACE",
                 },
             },
@@ -60,3 +60,4 @@ from databricks.sdk import WorkspaceClient
 w = WorkspaceClient()
 w.jobs.reset(new_settings=bike_lakehouse_2026, job_id=803209181019808)
 # or create a new job using: w.jobs.create(**bike_lakehouse_2026.as_shallow_dict())
+
