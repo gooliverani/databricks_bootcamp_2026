@@ -256,6 +256,21 @@ Run `quality_checks_silver.ipynb` after Silver layer processing to validate data
 - Quality checks are implemented at the Silver layer to catch data issues before Gold processing
 - The Silver layer is organized by source system (CRM and ERP) for better maintainability
 
-## License
+## 🙏 Acknowledgments
 
-This project is part of the [Databricks Bootcamp 2026](https://github.com/DataWithBaraa/databricks_bootcamp_2026) by https://www.datawithbaraa.com/
+This project is part of the comprehensive SQL course by **DataWithBaraa**. Special thanks to Baraa for creating excellent educational content on data analytics and SQL!
+
+**Connect with DataWithBaraa:**
+- 🎥 [YouTube Channel](https://www.youtube.com/@DataWithBaraa)
+- 🌐 [Website](https://www.datawithbaraa.com/)
+- 💻 [GitHub](https://github.com/DataWithBaraa)
+
+---
+
+## 📧 Contact
+
+For questions or suggestions, please open an issue in this repository.
+
+---
+
+**⭐ If you find this project helpful, please consider giving it a star!**
