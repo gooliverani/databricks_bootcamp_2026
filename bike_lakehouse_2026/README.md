@@ -258,7 +258,7 @@ Run `quality_checks_silver.ipynb` after Silver layer processing to validate data
 
 ## 🙏 Acknowledgments
 
-This project is part of the comprehensive SQL course by **DataWithBaraa**. Special thanks to Baraa for creating excellent educational content on data analytics and SQL!
+This project is part of the comprehensive **Databricks Bootcamp 2026** course by **DataWithBaraa**. Special thanks to Baraa for creating excellent educational content on data analytics, SQL, and Databricks!
 
 **Connect with DataWithBaraa:**
 - 🎥 [YouTube Channel](https://www.youtube.com/@DataWithBaraa)
