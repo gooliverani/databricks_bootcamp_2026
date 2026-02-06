@@ -26,6 +26,8 @@ bike_lakehouse_2026/
 │   ├── gold_dim_products.ipynb     # Product dimension table
 │   ├── gold_fact_sales.ipynb       # Sales fact table
 │   └── quality_checks_gold.ipynb   # Gold layer quality validation
+├── docs/                       # Project documentation
+│   └── [Documentation files]  # Additional documentation and guides
 ├── init_lakehouse.ipynb       # Initialization notebook for lakehouse setup
 ├── pipeline.json              # Databricks job configuration (JSON format)
 ├── pipeline.yaml              # Databricks job configuration (YAML format)
@@ -111,6 +113,17 @@ The `quality_checks_silver.ipynb` notebook validates data quality before promoti
   - `fact_sales`: Sales transactions with foreign keys to dimensions
 - Optimized for reporting, dashboards, and business intelligence
 - Orchestrated execution through `gold_orchestration.ipynb`
+
+## Documentation
+
+Additional project documentation, architecture diagrams, and guides are available in the [`docs/`](./docs) directory. This includes:
+
+- Detailed architecture documentation
+- Data model specifications
+- Setup and deployment guides
+- Best practices and troubleshooting tips
+
+> **📚 For comprehensive project documentation, please refer to the [docs folder](./docs).**
 
 ## Pipeline Orchestration
 
@@ -258,7 +271,7 @@ Run `quality_checks_silver.ipynb` after Silver layer processing to validate data
 
 ## 🙏 Acknowledgments
 
-This project is part of the comprehensive **Databricks Bootcamp 2026** course by **DataWithBaraa**. Special thanks to Baraa for creating excellent educational content on data analytics, SQL, and Databricks!
+This project is part of the comprehensive **Databricks Bootcamp 2026** course by **DataWithBaraa**. Special thanks to Baraa for creating excellent educational content on data analytics, SQL, and Databricks engineering.
 
 **Connect with DataWithBaraa:**
 - 🎥 [YouTube Channel](https://www.youtube.com/@DataWithBaraa)
